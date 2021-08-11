@@ -4,10 +4,22 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject target;
+    private GameObject target;
+    private List<InventoryItem> auxInventory;
+    private Vector3 place;
+
 
     private RaycastHit hit;
-   
+
+    
+
+
+    public class InventoryItem
+    {
+        public GameObject item;
+        public int amount;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -22,8 +34,6 @@ public class GameManager : MonoBehaviour
                 } else {
                     QuitTarget();
                 }
-            } else {
-                QuitTarget();
             }
         }
 

@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 //INHERITANCE
 public class NPCBase : MonoBehaviour {
@@ -17,9 +19,11 @@ public class NPCBase : MonoBehaviour {
     public virtual void OpenQuestUI() {
         uiQuest.titleMainText.text = $"{npcName} - {npcJob}";
         uiQuest.contentMainText.text = introduction;
+        CreateQuestList();
         uiQuest.questListScreen.SetActive(true);
     }
     public virtual void CloseQuestUI() {
+        uiQuest.ClearQuestLinks();
         uiQuest.questListScreen.SetActive(false);
     }
 
@@ -30,4 +34,10 @@ public class NPCBase : MonoBehaviour {
         activeScreen.gameObject.SetActive(false);
     }
 
+    private void CreateQuestList() {
+        foreach(Quest quest in questList) {
+            GameObject questItem = Instantiate(uiQuest.questListItemPrefab, uiQuest.questListPanel.transform);
+            questItem.transform.Find("QuestButton/TextButton").gameObject.GetComponent<TextMeshProUGUI>().text = quest.questTitle;
+        }
+    }
 }

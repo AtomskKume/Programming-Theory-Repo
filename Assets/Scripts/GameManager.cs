@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
-    private GameObject target;
+    public GameObject target { get; private set; }
     
     private Vector3 place;
 

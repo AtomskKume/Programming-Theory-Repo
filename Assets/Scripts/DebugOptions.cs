@@ -17,15 +17,17 @@ public class DebugOptions : MonoBehaviour {
 
     public void AddOneItem(int index) {
         inventoryHandler.AddItemToInventory(items[index], 1);
-        UpdateInventory();
     }
 
     public void RemoveOneItem(int index) {
         inventoryHandler.RemoveItemToInventory(items[index], 1);
-        UpdateInventory();
     }
 
     public void UpdateInventory() {
         inventorytext.text = $"Inventory:\n{inventoryHandler.GetListItems()}";
+    }
+
+    private void Update() {
+        UpdateInventory();
     }
 }

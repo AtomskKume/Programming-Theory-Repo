@@ -5,17 +5,33 @@ using TMPro;
 
 public class QuestLogHandler : MonoBehaviour {
 
+    //23A496
+    private Color aceptedQuestColor = new Color(0.1372549f, 0.6431373f, 0.5849689f, 1f);
+    //727272
+    private Color completeQuestColor = new Color(0.4433962f, 0.4433962f, 0.4433962f, 1f);
+
+    private InventoryHandler inventoryHandler;
+    private GameManager gameManager;
+
     public GameObject contentQuestLog;
     public GameObject questLogItemPrefab;
     public UIQuest uiQuest;
 
     private List<Quest> questLog = new List<Quest>();
+
+    private void Awake() {
+        inventoryHandler = GetComponent<InventoryHandler>();
+        gameManager = GetComponent<GameManager>();
+    }
+
     public void AddQuestLog(Quest quest) {
         int questIndex = FindItem(quest);
 
         if (questIndex == -1) {
             questLog.Add(quest);
             quest.isAcepted = true;
+            gameManager.target.GetComponent<NPCBase>().GiveQuest(quest);
+            inventoryHandler.ReviweQuestItems();
             UpdateQuestLog();
         }
     }
@@ -44,9 +60,19 @@ public class QuestLogHandler : MonoBehaviour {
     private void UpdateQuestLog() {
         CleanQuestLog();
         foreach (Quest quest in questLog) {
-            GameObject questItem = Instantiate(questLogItemPrefab, contentQuestLog.transform);
-            questItem.transform.Find("QuestButton/TextButton").gameObject.GetComponent<TextMeshProUGUI>().text = quest.questTitle;
-            questItem.GetComponent<QuestListItem>().AddQuestLink(quest, uiQuest);
+            if (!quest.isComplete) {
+                GameObject questItem = Instantiate(questLogItemPrefab, contentQuestLog.transform);
+                questItem.transform.Find("QuestButton/TextButton").gameObject.GetComponent<TextMeshProUGUI>().text = quest.questTitle;
+            
+                if (quest.isAcepted) {
+                    questItem.transform.Find("QuestButton/TextButton").gameObject.GetComponent<TextMeshProUGUI>().color = aceptedQuestColor;
+                }
+                if (quest.isDone) {
+                    questItem.transform.Find("QuestButton/TextButton").gameObject.GetComponent<TextMeshProUGUI>().color = completeQuestColor;
+                }
+
+                questItem.GetComponent<QuestListItem>().AddQuestLink(quest, uiQuest);
+            }
         }
     }
 
@@ -61,4 +87,20 @@ public class QuestLogHandler : MonoBehaviour {
             }
         }
     }
+
+    //POLYMORPHISM
+    public void UpdateQuestComplete(GameObject item, int amount) {
+        foreach(Quest quest in questLog) {
+            quest.UpdateQuest(item, amount);
+        }
+        UpdateQuestLog();
+    }
+
+    public void UpdateQuestComplete(NPCBase npc) {
+        foreach (Quest quest in questLog) {
+            quest.UpdateQuest(npc);
+        }
+        UpdateQuestLog();
+    }
+    //POLYMORPHISM
 }

@@ -10,7 +10,7 @@ public class QuestListItem : MonoBehaviour
     public void AddQuestLink(Quest quest, UIQuest uiQuest) {
         vinculatedQuest = quest;
 
-        transform.Find("QuestButton").gameObject.GetComponent<Button>().onClick.AddListener(()=> { uiQuest.OpenDetailQuest(vinculatedQuest); });
+        transform.Find("QuestButton").gameObject.GetComponent<Button>().onClick.AddListener(()=> {uiQuest.OpenDetailQuest(vinculatedQuest); });
     }
 
 }

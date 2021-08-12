@@ -35,6 +35,7 @@ public class UIQuest : MonoBehaviour {
 
     //QuestLog
     public QuestLogHandler questLogHandler;
+    public InventoryHandler inventoryHandler;
 
     private void Awake() {
         ClearQuestLinks();
@@ -47,12 +48,14 @@ public class UIQuest : MonoBehaviour {
         }
     }
 
-    public void OpenQuestList(string title, string introduction, List<Quest> questList) {
+    public void OpenQuestList(string title, string introduction, List<Quest> questList, NPCBase npc) {
+        questListScreen.SetActive(true);
+        questLogHandler.UpdateQuestComplete(npc);
         actualQuestList = questList;
         titleMainText.text = title;
         contentMainText.text = introduction;
         CreateQuestLinks(questList);
-        questListScreen.SetActive(true);
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)questListPanel.transform);
     }
 
     public void CloseQuestList() {
@@ -77,7 +80,7 @@ public class UIQuest : MonoBehaviour {
                     questItem.transform.Find("QuestButton/TextButton").gameObject.GetComponent<TextMeshProUGUI>().color = newQuestColor;
                 }
 
-                if (quest.isComplete) {
+                if (quest.isAcepted && quest.isDone) {
                     questItem.transform.Find("QuestButton/TextButton").gameObject.GetComponent<TextMeshProUGUI>().color = completeQuestColor;
                 }
 
@@ -87,15 +90,40 @@ public class UIQuest : MonoBehaviour {
     }
 
     public void OpenDetailQuest(Quest quest) {
+        questDetailScreen.SetActive(true);
         titleDetailText.text = quest.questTitle;
         contentDetailText.text = quest.questText;
 
+        
         acceptDetailButton.gameObject.SetActive(!quest.isAcepted);
+        acceptDetailButton.onClick.RemoveAllListeners();
         acceptDetailButton.onClick.AddListener(() => { questLogHandler.AddQuestLog(quest); OpenDetailQuest(quest); if (questListScreen.activeSelf) { CreateQuestLinks(); } });
-        removeDetailButton.gameObject.SetActive(quest.isAcepted);
-        removeDetailButton.onClick.AddListener(() => { questLogHandler.RemoveQuestLog(quest); CloseDetailQuest(); if (questListScreen.activeSelf) { CreateQuestLinks(); } });
-        completeDetailButton.gameObject.SetActive(quest.isAcepted && !quest.isComplete);
 
+        removeDetailButton.gameObject.SetActive(quest.isAcepted);
+        completeDetailButton.onClick.RemoveAllListeners();
+        removeDetailButton.onClick.AddListener(() => { questLogHandler.RemoveQuestLog(quest); CloseDetailQuest(); if (questListScreen.activeSelf) { CreateQuestLinks(); } });
+        
+        if(quest.isAcepted && quest.isDone && questListScreen.activeSelf) {
+            completeDetailButton.gameObject.SetActive(true);
+            completeDetailButton.onClick.RemoveAllListeners();
+            completeDetailButton.onClick.AddListener(()=> { 
+                quest.CompleteQuest(); 
+                questLogHandler.RemoveQuestLog(quest); 
+                CloseDetailQuest();
+                if (questListScreen.activeSelf) {
+                    CreateQuestLinks(); 
+                }
+                Debug.Log(quest.questTitle);
+                if (quest.isObjectQuest) {
+                    inventoryHandler.RemoveItemToInventory(quest.questObject, quest.objectsAmount);
+                }
+                GetReward(quest);
+            });
+        } else {
+            completeDetailButton.gameObject.SetActive(false);
+        }
+
+        objetiveDetailText.text = "";
         if (quest.isObjectQuest) {
             objetiveDetailText.text = $"- {quest.questObject.name}: {quest.actualAmount}/{quest.objectsAmount} \n";
         }
@@ -103,14 +131,28 @@ public class UIQuest : MonoBehaviour {
 
         }
         if (quest.needTalkToNpc) {
-
+            objetiveDetailText.text += $"- Talk to {quest.npc.GetNpcQuestName()} \n";
         }
 
-        questDetailScreen.SetActive(true);
+        if(quest.reward.Count > 0) {
+            objetiveDetailText.text += "\n\nRewards:\n";
+            foreach (QuestReward reward in quest.reward) {
+                objetiveDetailText.text += $"- {reward.item.name}: {reward.amount}";
+            }
+        }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)questDetailPanel.transform);
     }
 
     public void CloseDetailQuest() {
         questDetailScreen.SetActive(false);
     }
 
+    private void GetReward(Quest quest) {
+        if(quest.reward.Count > 0) {
+            foreach (QuestReward reward in quest.reward) {
+                inventoryHandler.AddItemToInventory(reward.item, reward.amount);
+            }
+        }
+    }
 }

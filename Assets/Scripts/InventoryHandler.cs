@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InventoryHandler : MonoBehaviour {
+    
     private List<InventoryItem> auxInventory = new List<InventoryItem>();
+    private QuestLogHandler questLogHandler;
 
 
     private class InventoryItem
@@ -17,26 +19,30 @@ public class InventoryHandler : MonoBehaviour {
         }
     }
 
+    private void Awake() {
+        questLogHandler = GetComponent<QuestLogHandler>();
+    }
+
     public void AddItemToInventory(GameObject item, int amount) {
         int itemIndex = FindItem(item);
         if (itemIndex == -1) {
             auxInventory.Add(new InventoryItem(item, amount));
+            itemIndex = auxInventory.Count-1;
         } else {
             auxInventory[itemIndex].amount += amount;
         }
-        
+        questLogHandler.UpdateQuestComplete(auxInventory[itemIndex].item, auxInventory[itemIndex].amount);
     }
 
     public void RemoveItemToInventory(GameObject item, int amount) {
         int itemIndex = FindItem(item);
         if (itemIndex != -1) {
             auxInventory[itemIndex].amount -= amount;
-
-            if(auxInventory[itemIndex].amount < 1) {
+            questLogHandler.UpdateQuestComplete(auxInventory[itemIndex].item, auxInventory[itemIndex].amount);
+            if (auxInventory[itemIndex].amount < 1) {
                 auxInventory.RemoveAt(itemIndex);
             }
-        } 
-
+        }
     }
 
 
@@ -58,5 +64,11 @@ public class InventoryHandler : MonoBehaviour {
             itemsToText += $"{inventoryItem.item.name}: {inventoryItem.amount}\n"; 
         }
         return itemsToText;
+    }
+
+    public void ReviweQuestItems() {
+        foreach (InventoryItem inventoryItem in auxInventory) {
+            questLogHandler.UpdateQuestComplete(inventoryItem.item, inventoryItem.amount);
+        }
     }
 }

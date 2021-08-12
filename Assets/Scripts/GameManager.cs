@@ -1,29 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
     private GameObject target;
-    private List<InventoryItem> auxInventory;
+    private List<Quest> logQuest;
     private Vector3 place;
 
 
     private RaycastHit hit;
 
-    
-
-
-    public class InventoryItem
-    {
-        public GameObject item;
-        public int amount;
-    }
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetMouseButtonDown(0)) {
+
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+
             bool isHit = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit);
 
             if(isHit) {
@@ -50,6 +46,34 @@ public class GameManager : MonoBehaviour
             target.GetComponent<NPCBase>().Deselected();
         }
         target = null;
+    }
+
+    public void AddQuestLog(Quest quest) {
+        int questIndex = FindItem(quest);
+
+        if(questIndex == -1) {
+            logQuest.Add(quest);
+        }
+
+    }
+    public void RemoveQuestLog(Quest quest) {
+        int questIndex = FindItem(quest);
+
+        if (questIndex != -1) {
+            logQuest.RemoveAt(questIndex);
+        }
+    }
+
+    private int FindItem(Quest item) {
+        int i = 0;
+        int posItem = -1;
+        foreach (Quest quest in logQuest) {
+            if (quest.questId == item.questId) {
+                posItem = i;
+            }
+            i++;
+        }
+        return posItem;
     }
 
 }

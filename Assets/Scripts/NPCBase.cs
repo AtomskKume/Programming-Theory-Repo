@@ -17,14 +17,10 @@ public class NPCBase : MonoBehaviour {
     
 
     public virtual void OpenQuestUI() {
-        uiQuest.titleMainText.text = $"{npcName} - {npcJob}";
-        uiQuest.contentMainText.text = introduction;
-        CreateQuestList();
-        uiQuest.questListScreen.SetActive(true);
+        uiQuest.OpenQuestList($"{npcName} - {npcJob}", introduction, questList);
     }
     public virtual void CloseQuestUI() {
-        uiQuest.ClearQuestLinks();
-        uiQuest.questListScreen.SetActive(false);
+        uiQuest.CloseQuestList();
     }
 
     public void Selected() {
@@ -32,12 +28,5 @@ public class NPCBase : MonoBehaviour {
     }
     public void Deselected() {
         activeScreen.gameObject.SetActive(false);
-    }
-
-    private void CreateQuestList() {
-        foreach(Quest quest in questList) {
-            GameObject questItem = Instantiate(uiQuest.questListItemPrefab, uiQuest.questListPanel.transform);
-            questItem.transform.Find("QuestButton/TextButton").gameObject.GetComponent<TextMeshProUGUI>().text = quest.questTitle;
-        }
     }
 }

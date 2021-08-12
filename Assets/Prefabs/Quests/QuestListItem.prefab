@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8389925841719841526}
+  - component: {fileID: 2117210769170242504}
   m_Layer: 5
   m_Name: QuestListItem
   m_TagString: QuestLink
@@ -36,6 +37,18 @@ RectTransform:
   m_AnchoredPosition: {x: -8, y: 89}
   m_SizeDelta: {x: 318.2, y: 55.3}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2117210769170242504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3462528192101038995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd012de451af73f468b93a15fb2aa751, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3835726615394492831
 GameObject:
   m_ObjectHideFlags: 0

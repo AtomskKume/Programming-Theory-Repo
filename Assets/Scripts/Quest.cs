@@ -6,33 +6,28 @@ using UnityEngine.UI;
 
 public class Quest : MonoBehaviour {
 
-//ENCAPSULATION
-    public bool isAcepted { get; private set;}
-    [SerializeField]
-    private bool isActiveQuest = false;
-    [SerializeField]
-    protected Quest nextQuest;
-    
+    //ENCAPSULATION
+    public string questId;
+    public bool isActive = false;
+    public bool isAcepted = false;
+    public bool isComplete = false;
+
+    [SerializeField] protected Quest nextQuest;
+            
     public string questTitle;
-    [TextArea]
-    public string questText;
+    [TextArea] public string questText;
 
     public bool isObjectQuest;
-    [SerializeField] private GameObject questObject;
-    [SerializeField] private int objectsAmount;
+    public GameObject questObject;
+    public int objectsAmount;
+    public int actualAmount;
     
     public bool isPlaceQuest;
-    [SerializeField] private Vector3 place;
-    [SerializeField] private float distance;
+    public Vector3 place;
+    public float distance;
 
     public bool needTalkToNpc;
-    [SerializeField] private NPCBase npc;
-
-    private GameObject questListScreen;
-    private TextMeshProUGUI titleMainText;
-    private TextMeshProUGUI contentMainText;
-    private Button CancelButton;
-
+    public NPCBase npc;
 
 //ENCAPSULATION
 
@@ -53,5 +48,9 @@ public class Quest : MonoBehaviour {
     public void RemoveQuest() {
         isAcepted = false;
     }
+
+
+
+
 //ABSTRACTION
 }

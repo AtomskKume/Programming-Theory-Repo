@@ -41,16 +41,5 @@ public class Quest : MonoBehaviour {
     public virtual void Complete (NPCBase npc) { }
   //POLYMORPHISM
 
-    public void QuestAcepted() {
-        isAcepted = true;
-    }
-
-    public void RemoveQuest() {
-        isAcepted = false;
-    }
-
-
-
-
 //ABSTRACTION
 }

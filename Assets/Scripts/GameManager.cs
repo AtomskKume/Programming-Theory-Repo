@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class GameManager : MonoBehaviour
 {
     private GameObject target;
-    private List<Quest> logQuest;
+    
     private Vector3 place;
 
 
@@ -48,32 +48,6 @@ public class GameManager : MonoBehaviour
         target = null;
     }
 
-    public void AddQuestLog(Quest quest) {
-        int questIndex = FindItem(quest);
-
-        if(questIndex == -1) {
-            logQuest.Add(quest);
-        }
-
-    }
-    public void RemoveQuestLog(Quest quest) {
-        int questIndex = FindItem(quest);
-
-        if (questIndex != -1) {
-            logQuest.RemoveAt(questIndex);
-        }
-    }
-
-    private int FindItem(Quest item) {
-        int i = 0;
-        int posItem = -1;
-        foreach (Quest quest in logQuest) {
-            if (quest.questId == item.questId) {
-                posItem = i;
-            }
-            i++;
-        }
-        return posItem;
-    }
+    
 
 }

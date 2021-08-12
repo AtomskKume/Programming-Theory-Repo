@@ -5,6 +5,15 @@ using TMPro;
 using UnityEngine.UI;
 
 public class UIQuest : MonoBehaviour {
+    // A42323
+    private Color newQuestColor = new Color(0.6415094f, 0.1361695f, 0.1361695f, 1f);
+    //23A496
+    private Color aceptedQuestColor = new Color(0.1372549f, 0.6431373f, 0.5849689f, 1f);
+    //727272
+    private Color completeQuestColor = new Color(0.4433962f, 0.4433962f, 0.4433962f, 1f);
+
+    private List<Quest> actualQuestList;
+
     //Quest list screen
     public GameObject questListScreen;
     public GameObject questListPanel;
@@ -25,12 +34,10 @@ public class UIQuest : MonoBehaviour {
     public Button completeDetailButton;
 
     //QuestLog
-
+    public QuestLogHandler questLogHandler;
 
     private void Awake() {
         ClearQuestLinks();
-        //cancelListButton.onClick.AddListener(() => { Debug.Log("List"); questListScreen.SetActive(false); });
-        //cancelDetailButton.onClick.AddListener(()=> { Debug.Log("Detail");  questDetailScreen.SetActive(false); });
     }
 
     public void ClearQuestLinks() {
@@ -41,6 +48,7 @@ public class UIQuest : MonoBehaviour {
     }
 
     public void OpenQuestList(string title, string introduction, List<Quest> questList) {
+        actualQuestList = questList;
         titleMainText.text = title;
         contentMainText.text = introduction;
         CreateQuestLinks(questList);
@@ -48,18 +56,31 @@ public class UIQuest : MonoBehaviour {
     }
 
     public void CloseQuestList() {
-        Debug.Log("List");
         ClearQuestLinks();
+        actualQuestList = null;
         questListScreen.SetActive(false);
         questDetailScreen.SetActive(false);
     }
 
+    private void CreateQuestLinks() {
+        CreateQuestLinks(actualQuestList);
+    }
     private void CreateQuestLinks(List<Quest> questList) {
         ClearQuestLinks();
         foreach (Quest quest in questList) {
             if(quest.isActive && !quest.isComplete) {
                 GameObject questItem = Instantiate(questListItemPrefab, questListPanel.transform);
                 questItem.transform.Find("QuestButton/TextButton").gameObject.GetComponent<TextMeshProUGUI>().text = quest.questTitle;
+                if (quest.isAcepted) {
+                    questItem.transform.Find("QuestButton/TextButton").gameObject.GetComponent<TextMeshProUGUI>().color = aceptedQuestColor;
+                } else {
+                    questItem.transform.Find("QuestButton/TextButton").gameObject.GetComponent<TextMeshProUGUI>().color = newQuestColor;
+                }
+
+                if (quest.isComplete) {
+                    questItem.transform.Find("QuestButton/TextButton").gameObject.GetComponent<TextMeshProUGUI>().color = completeQuestColor;
+                }
+
                 questItem.GetComponent<QuestListItem>().AddQuestLink(quest, this);
             }
         }
@@ -70,7 +91,9 @@ public class UIQuest : MonoBehaviour {
         contentDetailText.text = quest.questText;
 
         acceptDetailButton.gameObject.SetActive(!quest.isAcepted);
+        acceptDetailButton.onClick.AddListener(() => { questLogHandler.AddQuestLog(quest); OpenDetailQuest(quest); if (questListScreen.activeSelf) { CreateQuestLinks(); } });
         removeDetailButton.gameObject.SetActive(quest.isAcepted);
+        removeDetailButton.onClick.AddListener(() => { questLogHandler.RemoveQuestLog(quest); CloseDetailQuest(); if (questListScreen.activeSelf) { CreateQuestLinks(); } });
         completeDetailButton.gameObject.SetActive(quest.isAcepted && !quest.isComplete);
 
         if (quest.isObjectQuest) {
@@ -87,7 +110,6 @@ public class UIQuest : MonoBehaviour {
     }
 
     public void CloseDetailQuest() {
-        Debug.Log("Detail");
         questDetailScreen.SetActive(false);
     }
 

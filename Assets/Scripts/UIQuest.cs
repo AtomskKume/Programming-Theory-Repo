@@ -100,7 +100,7 @@ public class UIQuest : MonoBehaviour {
         acceptDetailButton.onClick.AddListener(() => { questLogHandler.AddQuestLog(quest); OpenDetailQuest(quest); if (questListScreen.activeSelf) { CreateQuestLinks(); } });
 
         removeDetailButton.gameObject.SetActive(quest.isAcepted);
-        completeDetailButton.onClick.RemoveAllListeners();
+        removeDetailButton.onClick.RemoveAllListeners();
         removeDetailButton.onClick.AddListener(() => { questLogHandler.RemoveQuestLog(quest); CloseDetailQuest(); if (questListScreen.activeSelf) { CreateQuestLinks(); } });
         
         if(quest.isAcepted && quest.isDone && questListScreen.activeSelf) {
@@ -113,7 +113,7 @@ public class UIQuest : MonoBehaviour {
                 if (questListScreen.activeSelf) {
                     CreateQuestLinks(); 
                 }
-                Debug.Log(quest.questTitle);
+                
                 if (quest.isObjectQuest) {
                     inventoryHandler.RemoveItemToInventory(quest.questObject, quest.objectsAmount);
                 }
@@ -137,7 +137,7 @@ public class UIQuest : MonoBehaviour {
         if(quest.reward.Count > 0) {
             objetiveDetailText.text += "\n\nRewards:\n";
             foreach (QuestReward reward in quest.reward) {
-                objetiveDetailText.text += $"- {reward.item.name}: {reward.amount}";
+                objetiveDetailText.text += $"- {reward.item.name}: {reward.amount}\n";
             }
         }
 

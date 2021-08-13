@@ -37,7 +37,7 @@ public class QuestLogHandler : MonoBehaviour {
     }
     public void RemoveQuestLog(Quest quest) {
         int questIndex = FindItem(quest);
-
+        
         if (questIndex != -1) {
             questLog.RemoveAt(questIndex);
             quest.isAcepted = false;

@@ -11,7 +11,7 @@ public class QuestLogHandler : MonoBehaviour {
     private Color completeQuestColor = new Color(0.4433962f, 0.4433962f, 0.4433962f, 1f);
 
     private InventoryHandler inventoryHandler;
-    private GameManager gameManager;
+    private Player player;
 
     public GameObject contentQuestLog;
     public GameObject questLogItemPrefab;
@@ -21,7 +21,7 @@ public class QuestLogHandler : MonoBehaviour {
 
     private void Awake() {
         inventoryHandler = GetComponent<InventoryHandler>();
-        gameManager = GetComponent<GameManager>();
+        player = GetComponent<Player>();
     }
 
     public void AddQuestLog(Quest quest) {
@@ -30,7 +30,7 @@ public class QuestLogHandler : MonoBehaviour {
         if (questIndex == -1) {
             questLog.Add(quest);
             quest.isAcepted = true;
-            gameManager.target.GetComponent<NPCBase>().GiveQuest(quest);
+            player.target.GetComponent<NPCBase>().GiveQuest(quest);
             inventoryHandler.ReviweQuestItems();
             UpdateQuestLog();
         }

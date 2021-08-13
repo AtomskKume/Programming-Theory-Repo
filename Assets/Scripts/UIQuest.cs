@@ -53,7 +53,7 @@ public class UIQuest : MonoBehaviour {
         questLogHandler.UpdateQuestComplete(npc);
         actualQuestList = questList;
         titleMainText.text = title;
-        contentMainText.text = introduction;
+        contentMainText.text = introduction.Replace("$p", GameManager.instance.playerName);
         CreateQuestLinks(questList);
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)questListPanel.transform);
     }

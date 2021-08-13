@@ -12,7 +12,7 @@ public class DebugOptions : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        inventoryHandler = GameObject.Find("GameManager").GetComponent<InventoryHandler>();
+        inventoryHandler = GameObject.Find("Player").GetComponent<InventoryHandler>();
     }
 
     public void AddOneItem(int index) {
